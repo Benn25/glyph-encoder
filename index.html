@@ -12,7 +12,7 @@
   :root{
     --bg:#0c0e14; --panel:#141823; --panel-2:#0f131c;
     --ink:#e8eaf0; --muted:#717a90; --line:#222838;
-    --amber:#f2a65a; --teal:#5ad1c5; --teal-dim:#2c5650;
+    --amber:#f2a65a; --amber-dim:#4a3a22; --teal:#5ad1c5; --teal-dim:#2c5650;
     --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
     --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   }
@@ -21,59 +21,62 @@
   body{background:var(--bg);color:var(--ink);font-family:var(--sans);
     display:flex;flex-direction:column;min-height:100dvh;
     padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-  header{padding:16px 18px 4px}
+  header{padding:14px 18px 2px}
   .brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-  .brand h1{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0}
+  .brand h1{font-size:21px;font-weight:800;letter-spacing:-.02em;margin:0}
   .brand h1 .b{color:var(--amber)}
-  .brand .tag{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em}
-  main{flex:1;display:flex;flex-direction:column;gap:11px;padding:8px 14px 14px;min-height:0}
+  .brand .tag{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.05em}
+  main{flex:1;display:flex;flex-direction:column;gap:10px;padding:8px 14px 14px;min-height:0}
 
-  .field{display:flex;flex-direction:column;gap:6px;flex:1;min-height:0}
-  .label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  .field{display:flex;flex-direction:column;gap:5px;flex:1;min-height:0}
+  .label{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;
     color:var(--muted);display:flex;justify-content:space-between;align-items:center}
   textarea{flex:1;width:100%;resize:none;border-radius:12px;border:1px solid var(--line);
     background:var(--panel);color:var(--ink);font-family:var(--sans);
-    font-size:16px;line-height:1.5;padding:13px;outline:none;min-height:72px}
+    font-size:16px;line-height:1.5;padding:12px;outline:none;min-height:60px}
   textarea:focus{border-color:var(--amber)}
 
-  .out-wrap{position:relative;flex:1;min-height:100px}
+  .out-wrap{position:relative;flex:1;min-height:88px}
   #out{height:100%;width:100%;border-radius:12px;border:1px solid var(--teal-dim);
     background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(90,209,197,.025) 3px,rgba(90,209,197,.025) 4px),var(--panel-2);
     color:var(--ink);font-family:var(--mono);font-size:17px;line-height:1.7;
-    padding:13px;overflow:auto;white-space:pre-wrap;word-break:break-word;
+    padding:12px;overflow:auto;white-space:pre-wrap;word-break:break-word;
     box-shadow:inset 0 0 24px rgba(90,209,197,.05)}
   #out:empty::before{content:"encoded output appears here";color:var(--muted);font-style:italic}
 
-  .grp{display:flex;gap:7px}
-  .seg{flex:1;font-family:var(--mono);font-size:13px;letter-spacing:.03em;
-    padding:10px 6px;border-radius:10px;border:1px solid var(--line);
-    background:var(--panel);color:var(--muted);font-weight:700;cursor:pointer;transition:all .12s}
-  .seg small{display:block;font-weight:400;font-size:10px;letter-spacing:.02em;margin-top:2px;opacity:.8}
-  .seg[aria-pressed="true"]{border-color:var(--amber);color:var(--amber);background:#1b1812;box-shadow:0 0 0 1px var(--amber) inset}
-  .seg.tealsel[aria-pressed="true"]{border-color:var(--teal);color:var(--teal);background:#0e1c1a;box-shadow:0 0 0 1px var(--teal) inset}
-
-  .lblrow{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:1px 2px}
+  /* Blender-style slider: label + value inside the track, drag anywhere */
+  .srow{display:flex;gap:7px;align-items:stretch}
+  .slider{flex:1;position:relative;height:46px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);overflow:hidden;cursor:ew-resize;touch-action:none;user-select:none}
+  .slider:focus{outline:none;border-color:var(--ink)}
+  .fill{position:absolute;left:0;top:0;bottom:0;width:50%;background:var(--amber-dim);transition:width .03s linear}
+  .slider.teal .fill{background:var(--teal-dim)}
+  .slabel{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;
+    padding:0 13px;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.02em;
+    color:var(--ink);pointer-events:none}
+  .slabel .sval{color:var(--muted);font-weight:400}
+  .slider:active .fill{transition:none}
+  .dice{width:46px;flex:none;border-radius:10px;border:1px solid var(--line);background:var(--panel);
+    color:var(--muted);font-size:17px;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center}
+  .dice:active{transform:translateY(1px);color:var(--ink);border-color:var(--teal-dim)}
 
   .row{display:flex;gap:7px;align-items:stretch}
-  .btn{font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.03em;
-    padding:13px 14px;border-radius:10px;border:1px solid var(--line);
-    background:var(--panel);color:var(--ink);cursor:pointer;transition:all .12s;
-    display:flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
-  .btn:active{transform:translateY(1px)}
-  .btn.primary{flex:1;background:var(--teal);color:#06201d;border-color:var(--teal)}
-  .btn.ghost{flex:1}
-  .btn.copied{background:var(--amber);border-color:var(--amber);color:#1a1206}
-
   .toggle{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
     font-family:var(--mono);font-size:12px;color:var(--muted);cursor:pointer;user-select:none;
     padding:9px 8px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
-  .sw{width:32px;height:19px;border-radius:10px;background:var(--line);position:relative;transition:background .15s;flex:none}
-  .sw::after{content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:var(--muted);transition:all .15s}
+  .sw{width:30px;height:18px;border-radius:9px;background:var(--line);position:relative;transition:background .15s;flex:none}
+  .sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--muted);transition:all .15s}
   .toggle[aria-pressed="true"] .sw{background:var(--teal-dim)}
-  .toggle[aria-pressed="true"] .sw::after{left:15px;background:var(--teal)}
+  .toggle[aria-pressed="true"] .sw::after{left:14px;background:var(--teal)}
   .toggle[aria-pressed="true"]{color:var(--ink);border-color:var(--teal-dim)}
+  .cap{font-family:var(--mono);font-size:10px;color:var(--muted);padding:0 2px}
 
-  .hint{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center;line-height:1.5;padding:2px 4px 2px}
+  .btn{font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.03em;
+    padding:13px 14px;border-radius:10px;border:1px solid var(--teal);background:var(--teal);color:#06201d;
+    cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;gap:7px;flex:1}
+  .btn:active{transform:translateY(1px)}
+  .btn.copied{background:var(--amber);border-color:var(--amber);color:#1a1206}
+  .hint{font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;line-height:1.5;padding:1px 4px}
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -87,180 +90,175 @@
     <div class="label"><span>Plain text</span><span id="incount">0</span></div>
     <textarea id="in" placeholder="Type your message…" autocapitalize="sentences" autocomplete="off" spellcheck="false"></textarea>
   </div>
-
-  <div class="grp" role="group" aria-label="Encoding strength">
-    <button class="seg" data-lvl="1" aria-pressed="false">L1<small>light</small></button>
-    <button class="seg" data-lvl="2" aria-pressed="false">L2<small>medium</small></button>
-    <button class="seg" data-lvl="3" aria-pressed="true">L3<small>hardcore</small></button>
-  </div>
-
   <div class="field">
     <div class="label"><span>Encoded</span></div>
     <div class="out-wrap"><div id="out"></div></div>
   </div>
 
-  <div class="lblrow">Invisible splits — hidden characters, stacks on top</div>
-  <div class="grp" role="group" aria-label="Invisible splits">
-    <button class="seg tealsel" data-zw="0.15" aria-pressed="false">15%</button>
-    <button class="seg tealsel" data-zw="0.33" aria-pressed="false">33%</button>
-    <button class="seg tealsel" data-zw="0.66" aria-pressed="false">66%</button>
+  <div class="srow">
+    <div class="slider" id="sl-str" role="slider" aria-label="Scramble" aria-valuemin="0" aria-valuemax="100" tabindex="0">
+      <div class="fill"></div><div class="slabel"><span>Scramble</span><span class="sval">50%</span></div>
+    </div>
+    <button class="dice" id="rnd-str" aria-label="Randomize scramble">⟳</button>
+  </div>
+  <div class="srow">
+    <div class="slider teal" id="sl-spl" role="slider" aria-label="Invisible splits" aria-valuemin="0" aria-valuemax="100" tabindex="0">
+      <div class="fill"></div><div class="slabel"><span>Invisible splits</span><span class="sval">0%</span></div>
+    </div>
+    <button class="dice" id="rnd-spl" aria-label="Randomize invisible splits">⟳</button>
+  </div>
+  <div class="srow">
+    <div class="slider teal" id="sl-usc" role="slider" aria-label="Spaces to underscore" aria-valuemin="0" aria-valuemax="100" tabindex="0">
+      <div class="fill"></div><div class="slabel"><span>Spaces → _</span><span class="sval">0%</span></div>
+    </div>
+    <button class="dice" id="rnd-usc" aria-label="Randomize spaces to underscore">⟳</button>
   </div>
 
   <div class="row">
-    <button class="toggle" id="live" aria-pressed="true"><span class="sw"></span>live preview</button>
-    <button class="toggle" id="usc" aria-pressed="false"><span class="sw"></span>spaces → _</button>
+    <button class="toggle" id="glyph" aria-pressed="false"><span class="sw"></span>fancy glyphs (cosmetic)</button>
   </div>
-
-  <div class="row">
-    <button class="btn ghost" id="vary">↻ Variation</button>
-    <button class="btn ghost" id="encode">Encode</button>
-  </div>
-  <div class="row"><button class="btn primary" id="copy">Copy result</button></div>
-  <div class="hint">↻ Variation = same text, fresh disguise. Invisible splits hit hardest but some apps strip them on paste.</div>
+  <div class="row"><button class="btn" id="copy">Copy result</button></div>
+  <div class="hint">Scramble survives normalization · glyphs &amp; splits are stripped by a serious filter · a frontier model may still read any of it.</div>
 </main>
 
 <script>
 /* ---------- glyph engine ---------- */
-const MATH = {
-  bold:        { up:0x1D400, lo:0x1D41A, holes:{} },
-  italic:      { up:0x1D434, lo:0x1D44E, holes:{ h:'\u210E' } },
-  script:      { up:0x1D49C, lo:0x1D4B6, holes:{
-                  B:'\u212C',E:'\u2130',F:'\u2131',H:'\u210B',I:'\u2110',
-                  L:'\u2112',M:'\u2133',R:'\u211B', e:'\u212F',g:'\u210A',o:'\u2134' } },
-  boldScript:  { up:0x1D4D0, lo:0x1D4EA, holes:{} },
-  fraktur:     { up:0x1D504, lo:0x1D51E, holes:{
-                  C:'\u212D',H:'\u210C',I:'\u2111',R:'\u211C',Z:'\u2128' } },
-  doubleStruck:{ up:0x1D538, lo:0x1D552, holes:{
-                  C:'\u2102',H:'\u210D',N:'\u2115',P:'\u2119',Q:'\u211A',
-                  R:'\u211D',Z:'\u2124' } },
-  sans:        { up:0x1D5A0, lo:0x1D5BA, holes:{} },
-  sansBold:    { up:0x1D5D4, lo:0x1D5EE, holes:{} },
-  mono:        { up:0x1D670, lo:0x1D68A, holes:{} },
-};
-function mathGlyph(ch, k){
-  const s = MATH[k];
-  if (s.holes[ch]) return s.holes[ch];
-  const up = ch>='A'&&ch<='Z', lo = ch>='a'&&ch<='z';
-  if(!up && !lo) return null;
-  return String.fromCodePoint((up?s.up:s.lo) + ch.charCodeAt(0) - (up?65:97));
-}
-// cross-script look-alikes — visually near-identical, different codepoints
-const HOMO = {
-  a:['а','ɑ'], c:['с','ϲ'], e:['е','ё'], g:['ɡ'], h:['һ'], i:['і','ı'],
-  j:['ј'], k:['κ'], n:['ո'], o:['о','ο'], p:['р','ρ'], s:['ѕ'],
-  u:['υ','ս'], v:['ν','ѵ'], w:['ѡ','ԝ'], x:['х','χ'], y:['у','γ'],
-  A:['Α','А'], B:['Β','В'], C:['С','Ϲ'], E:['Ε','Е'], H:['Η','Н'],
-  I:['Ι','І'], K:['Κ','К'], M:['Μ','М'], N:['Ν'], O:['Ο','О'],
-  P:['Ρ','Р'], T:['Τ','Т'], X:['Χ','Х'], Y:['Υ','У'], Z:['Ζ'],
-};
-// L1: featherweight, only iconic swaps, mostly off
-const L1_SWAP = { a:'@', e:'3', o:'0', i:'1', s:'$' };
-// L2: readable leet only (no weird symbols)
-const L2_LEET = { a:['@','4'], b:['8'], e:['3'], g:['9'], i:['1','!'],
-                  l:['1'], o:['0'], s:['5','$'], t:['7'], z:['2'] };
-// L3 in-word breaks: tiny dots only, rare. L2: tinier + rarer.
-const INWORD = { 2:{prob:0.04, set:['\u00B7']}, 3:{prob:0.10, set:['\u00B7','\u2027','\u30FB']} };
-// L3 punctuation → fullwidth / CJK variants
-const PUNCT_VARIANT = {
-  '.':['\u3002','\uFF0E'], ',':['\uFF0C'], '?':['\uFF1F'], '!':['\uFF01'],
-  ':':['\uFF1A'], ';':['\uFF1B'], '(':['\uFF08'], ')':['\uFF09'],
-  '-':['\uFF0D'], "'":['\u2019','\uFF07'], '"':['\u201D','\uFF02'],
-};
-const ZW = ['\u200B','\u200C','\u200D']; // ZWSP, ZWNJ, ZWJ
-function fullwidth(ch){
-  if(ch>='A'&&ch<='Z') return String.fromCodePoint(0xFF21+ch.charCodeAt(0)-65);
-  if(ch>='a'&&ch<='z') return String.fromCodePoint(0xFF41+ch.charCodeAt(0)-97);
-  return null;
-}
-function poolFor(ch, level){
-  const low = ch.toLowerCase();
-  const isL = (ch>='a'&&ch<='z')||(ch>='A'&&ch<='Z');
-  if(!isL) return null;
-  if(level===1){ const g=L1_SWAP[low]; return g ? [ch,ch,ch,ch,g] : null; } // ~80% plain
-  if(level===2){
-    const out=[ch,ch];
-    (L2_LEET[low]||[]).forEach(x=>out.push(x));
-    const fw=fullwidth(ch); if(fw) out.push(fw);
-    return out;
-  }
-  const out=[];                                   // L3: only the readable families
-  for(const k in MATH){ const g=mathGlyph(ch,k); if(g) out.push(g); }
-  (HOMO[ch]||[]).forEach(x=>out.push(x));
-  const fw=fullwidth(ch); if(fw) out.push(fw);
-  return out.length ? out : null;
-}
-function rngAt(seed,i){
-  let t=(seed^(i*0x9E3779B1))>>>0;
-  return function(){ t|=0; t=(t+0x6D2B79F5)|0;
-    let r=Math.imul(t^(t>>>15),1|t); r=(r+Math.imul(r^(r>>>7),61|r))^r;
-    return ((r^(r>>>14))>>>0)/4294967296; };
-}
-function isLetter(ch){ return !!ch && ((ch>='a'&&ch<='z')||(ch>='A'&&ch<='Z')); }
+const MATH={bold:{up:0x1D400,lo:0x1D41A,holes:{}},italic:{up:0x1D434,lo:0x1D44E,holes:{h:'\u210E'}},
+  script:{up:0x1D49C,lo:0x1D4B6,holes:{B:'\u212C',E:'\u2130',F:'\u2131',H:'\u210B',I:'\u2110',L:'\u2112',M:'\u2133',R:'\u211B',e:'\u212F',g:'\u210A',o:'\u2134'}},
+  boldScript:{up:0x1D4D0,lo:0x1D4EA,holes:{}},
+  fraktur:{up:0x1D504,lo:0x1D51E,holes:{C:'\u212D',H:'\u210C',I:'\u2111',R:'\u211C',Z:'\u2128'}},
+  doubleStruck:{up:0x1D538,lo:0x1D552,holes:{C:'\u2102',H:'\u210D',N:'\u2115',P:'\u2119',Q:'\u211A',R:'\u211D',Z:'\u2124'}},
+  sans:{up:0x1D5A0,lo:0x1D5BA,holes:{}},sansBold:{up:0x1D5D4,lo:0x1D5EE,holes:{}},mono:{up:0x1D670,lo:0x1D68A,holes:{}}};
+function mathGlyph(ch,k){const s=MATH[k];if(s.holes[ch])return s.holes[ch];
+  const up=ch>='A'&&ch<='Z',lo=ch>='a'&&ch<='z';if(!up&&!lo)return null;
+  return String.fromCodePoint((up?s.up:s.lo)+ch.charCodeAt(0)-(up?65:97));}
+const HOMO={a:['а','ɑ'],c:['с','ϲ'],e:['е','ё'],g:['ɡ'],h:['һ'],i:['і','ı'],j:['ј'],k:['κ'],n:['ո'],
+  o:['о','ο'],p:['р','ρ'],s:['ѕ'],u:['υ','ս'],v:['ν','ѵ'],w:['ѡ','ԝ'],x:['х','χ'],y:['у','γ'],
+  A:['Α','А'],B:['Β','В'],C:['С','Ϲ'],E:['Ε','Е'],H:['Η','Н'],I:['Ι','І'],K:['Κ','К'],M:['Μ','М'],
+  N:['Ν'],O:['Ο','О'],P:['Ρ','Р'],T:['Τ','Т'],X:['Χ','Х'],Y:['Υ','У'],Z:['Ζ']};
+function fullwidth(ch){if(ch>='A'&&ch<='Z')return String.fromCodePoint(0xFF21+ch.charCodeAt(0)-65);
+  if(ch>='a'&&ch<='z')return String.fromCodePoint(0xFF41+ch.charCodeAt(0)-97);return null;}
+function glyphPool(ch){const out=[];for(const k in MATH){const g=mathGlyph(ch,k);if(g)out.push(g);}
+  (HOMO[ch]||[]).forEach(x=>out.push(x));const fw=fullwidth(ch);if(fw)out.push(fw);return out.length?out:null;}
+const PUNCT_VARIANT={'.':['\u3002','\uFF0E'],',':['\uFF0C'],'?':['\uFF1F'],'!':['\uFF01'],':':['\uFF1A'],';':['\uFF1B'],'(':['\uFF08'],')':['\uFF09'],'-':['\uFF0D']};
+const ZW=['\u200B','\u200C','\u200D'];
 
-function encode(text, level, seed, zwProb, usc){
-  let out='';
-  for(let i=0;i<text.length;i++){
-    const ch=text[i], rng=rngAt(seed,i);
-    if(ch===' '){ out += usc ? '_' : ' '; continue; }
-    const pool=poolFor(ch,level);
-    if(pool){
-      out += pool[Math.floor(rng()*pool.length)];
-      if(isLetter(text[i+1])){
-        const p=INWORD[level];
-        if(p && rng()<p.prob) out += p.set[Math.floor(rng()*p.set.length)];
-        if(zwProb>0 && rng()<zwProb) out += ZW[Math.floor(rng()*ZW.length)];
-      }
+function rngAt(seed,i){let t=(seed^(i*0x9E3779B1))>>>0;
+  return function(){t|=0;t=(t+0x6D2B79F5)|0;let r=Math.imul(t^(t>>>15),1|t);
+    r=(r+Math.imul(r^(r>>>7),61|r))^r;return((r^(r>>>14))>>>0)/4294967296;};}
+
+/* ---------- core (normalization-proof) ---------- */
+function anchors(len){
+  const up=len<=6?0:Math.floor((len-7)/2)+1;
+  let front=1+Math.ceil(up/2),back=1+Math.floor(up/2);
+  while(len-front-back<2&&(front>1||back>1)){if(front>back)front--;else back--;}
+  return {front,back};
+}
+function scrambleWord(word,seed,maxDist,intensity){
+  const n=word.length;if(n<4)return word;
+  const {front,back}=anchors(n);const midLen=n-front-back;if(midLen<2)return word;
+  const mid=word.slice(front,n-back).split('');const home=mid.map((_,i)=>i);const r=rngAt(seed,3);
+  for(let pass=0;pass<3;pass++){
+    for(let i=0;i<midLen-1;i++){
+      const d=1+Math.floor(r()*maxDist),j=i+d;if(j>=midLen)continue;
+      if(r()<intensity&&Math.abs(home[i]-j)<=maxDist&&Math.abs(home[j]-i)<=maxDist){
+        [mid[i],mid[j]]=[mid[j],mid[i]];[home[i],home[j]]=[home[j],home[i]];}
+    }
+  }
+  let res=word.slice(0,front)+mid.join('')+word.slice(n-back);
+  if(res===word){[mid[0],mid[1]]=[mid[1],mid[0]];res=word.slice(0,front)+mid.join('')+word.slice(n-back);}
+  return res;
+}
+function doubleOne(word,seed){const r=rngAt(seed,2);const p=Math.floor(r()*word.length);
+  return word.slice(0,p+1)+word[p]+word.slice(p+1);}
+function isAZ(ch){return!!ch&&((ch>='a'&&ch<='z')||(ch>='A'&&ch<='Z'));}
+function tokenize(text){const toks=[];let i=0;
+  while(i<text.length){
+    if(isAZ(text[i])){let j=i;while(j<text.length&&isAZ(text[j]))j++;toks.push({word:true,s:text.slice(i,j),start:i});i=j;}
+    else{toks.push({word:false,s:text[i],start:i});i++;}
+  }return toks;}
+
+function encode(text,o){
+  const t=o.strength, splits=o.splits, uscL=o.usc, glyph=!!o.glyph;
+  const sStr=o.seedStr|0, sSpl=o.seedSpl|0, sUsc=o.seedUsc|0;
+  const scrambleP=t, maxDist=(t<0.5?1:2), intensity=0.7*t, sepP=0.15*t, dblP=0.06*t;
+  const SEPSET=['.','-'];
+  const toks=tokenize(text); let out='', spaceIdx=0;
+  for(let ti=0;ti<toks.length;ti++){
+    const tok=toks[ti];
+    if(!tok.word){
+      if(tok.s===' '){ out += (rngAt(sUsc,spaceIdx)()<uscL)?'_':' '; spaceIdx++; }
+      else if(glyph&&PUNCT_VARIANT[tok.s]){const v=PUNCT_VARIANT[tok.s];out+=v[Math.floor(rngAt(sStr,tok.start)()*v.length)];}
+      else out += tok.s;
       continue;
     }
-    if(level===3 && PUNCT_VARIANT[ch]){ const v=PUNCT_VARIANT[ch]; out += v[Math.floor(rng()*v.length)]; }
-    else out += ch;
+    const closed=ti<toks.length-1; let w=tok.s;
+    const wr=rngAt(sStr^0x55,tok.start);
+    if(closed&&w.length>=4&&scrambleP>0&&wr()<scrambleP) w=scrambleWord(w,sStr^tok.start,maxDist,intensity);
+    if(closed&&dblP>0&&wr()<dblP) w=doubleOne(w,sStr^(tok.start+7));
+    for(let c=0;c<w.length;c++){
+      const ch=w[c], rs=rngAt(sStr,tok.start*131+c); let g=ch;
+      if(glyph){const pool=glyphPool(ch);if(pool)g=pool[Math.floor(rs()*pool.length)];}
+      out+=g;
+      if(c<w.length-1){
+        if(sepP>0&&rs()<sepP) out+=SEPSET[Math.floor(rs()*SEPSET.length)];
+        if(splits>0){const rz=rngAt(sSpl,tok.start*131+c);let nz=0;
+          if(rz()<splits)nz++; if(rz()<splits)nz++;
+          for(let q=0;q<nz;q++) out+=ZW[Math.floor(rz()*ZW.length)];}
+      }
+    }
   }
   return out;
 }
 
+/* ---------- sliders ---------- */
+function makeSlider(id, initial, onChange){
+  const el=document.getElementById(id);
+  const fill=el.querySelector('.fill'), valEl=el.querySelector('.sval');
+  let val=initial, dragging=false;
+  function set(v,silent){val=Math.max(0,Math.min(1,v));
+    fill.style.width=(val*100)+'%'; valEl.textContent=Math.round(val*100)+'%';
+    el.setAttribute('aria-valuenow',Math.round(val*100)); if(!silent) onChange(val);}
+  function fromX(clientX){const r=el.getBoundingClientRect(); set((clientX-r.left)/r.width);}
+  el.addEventListener('pointerdown',e=>{dragging=true;el.setPointerCapture(e.pointerId);fromX(e.clientX);e.preventDefault();});
+  el.addEventListener('pointermove',e=>{if(dragging)fromX(e.clientX);});
+  el.addEventListener('pointerup',()=>{dragging=false;});
+  el.addEventListener('pointercancel',()=>{dragging=false;});
+  el.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='ArrowUp'){set(val+0.02);e.preventDefault();}
+    if(e.key==='ArrowLeft'||e.key==='ArrowDown'){set(val-0.02);e.preventDefault();}});
+  set(initial,true);
+  return {get:()=>val};
+}
+
 /* ---------- wiring ---------- */
-const $in=document.getElementById('in'), $out=document.getElementById('out'),
-      $count=document.getElementById('incount'), $live=document.getElementById('live'),
-      $usc=document.getElementById('usc'), $copy=document.getElementById('copy');
-let level=3, seed=(Math.random()*1e9)|0, liveOn=true, zwProb=0, usc=false;
+const $in=document.getElementById('in'),$out=document.getElementById('out'),
+  $count=document.getElementById('incount'),$glyph=document.getElementById('glyph'),$copy=document.getElementById('copy');
+const rnd=()=>(Math.random()*1e9)|0;
+let seedStr=rnd(), seedSpl=rnd(), seedUsc=rnd(), glyph=false;
 
 function render(){
-  $out.textContent = encode($in.value, level, seed, zwProb, usc);
-  $count.textContent = $in.value.length;
+  $out.textContent=encode($in.value,{
+    strength:str.get(), splits:spl.get(), usc:usc.get(),
+    glyph, seedStr, seedSpl, seedUsc});
+  $count.textContent=$in.value.length;
 }
-$in.addEventListener('input', ()=>{ $count.textContent=$in.value.length; if(liveOn) render(); });
+const str=makeSlider('sl-str',0.5,render);
+const spl=makeSlider('sl-spl',0,render);
+const usc=makeSlider('sl-usc',0,render);
 
-document.querySelectorAll('[data-lvl]').forEach(b=>b.addEventListener('click',()=>{
-  level=+b.dataset.lvl;
-  document.querySelectorAll('[data-lvl]').forEach(x=>x.setAttribute('aria-pressed', x===b));
-  render();
-}));
-document.querySelectorAll('[data-zw]').forEach(b=>b.addEventListener('click',()=>{
-  const v=+b.dataset.zw;
-  if(zwProb===v){ zwProb=0; b.setAttribute('aria-pressed',false); }          // press active = off
-  else { zwProb=v; document.querySelectorAll('[data-zw]').forEach(x=>x.setAttribute('aria-pressed', x===b)); }
-  render();
-}));
-$live.addEventListener('click',()=>{ liveOn=!liveOn; $live.setAttribute('aria-pressed',liveOn); if(liveOn) render(); });
-$usc.addEventListener('click',()=>{ usc=!usc; $usc.setAttribute('aria-pressed',usc); render(); });
-document.getElementById('vary').addEventListener('click',()=>{ seed=(Math.random()*1e9)|0; render(); });
-document.getElementById('encode').addEventListener('click', render);
+document.getElementById('rnd-str').addEventListener('click',()=>{seedStr=rnd();render();});
+document.getElementById('rnd-spl').addEventListener('click',()=>{seedSpl=rnd();render();});
+document.getElementById('rnd-usc').addEventListener('click',()=>{seedUsc=rnd();render();});
+$glyph.addEventListener('click',()=>{glyph=!glyph;$glyph.setAttribute('aria-pressed',glyph);render();});
+$in.addEventListener('input',render);
 
-$copy.addEventListener('click', async ()=>{
-  const txt=$out.textContent; let ok=false;
-  try{ await navigator.clipboard.writeText(txt); ok=true; }
-  catch(e){
-    const ta=document.createElement('textarea'); ta.value=txt;
-    ta.style.position='fixed'; ta.style.opacity='0';
-    document.body.appendChild(ta); ta.select();
-    try{ ok=document.execCommand('copy'); }catch(_){}
-    document.body.removeChild(ta);
-  }
-  const orig=$copy.textContent;
-  $copy.textContent = ok ? 'Copied ✓' : 'Press & hold to copy';
-  $copy.classList.toggle('copied', ok);
-  setTimeout(()=>{ $copy.textContent=orig; $copy.classList.remove('copied'); },1400);
-});
+$copy.addEventListener('click',async()=>{const txt=$out.textContent;let ok=false;
+  try{await navigator.clipboard.writeText(txt);ok=true;}
+  catch(e){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();try{ok=document.execCommand('copy');}catch(_){}document.body.removeChild(ta);}
+  const orig=$copy.textContent;$copy.textContent=ok?'Copied ✓':'Press & hold to copy';
+  $copy.classList.toggle('copied',ok);setTimeout(()=>{$copy.textContent=orig;$copy.classList.remove('copied');},1400);});
 
 render();
 </script>
