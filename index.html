@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0c0e14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Glyphbreak</title>
+<style>
+  :root{
+    --bg:#0c0e14; --panel:#141823; --panel-2:#0f131c;
+    --ink:#e8eaf0; --muted:#717a90; --line:#222838;
+    --amber:#f2a65a; --teal:#5ad1c5; --teal-dim:#2c5650;
+    --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%}
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--sans);
+    display:flex;flex-direction:column;min-height:100dvh;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  header{padding:18px 18px 6px}
+  .brand{display:flex;align-items:baseline;gap:10px}
+  .brand h1{
+    font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0;
+  }
+  .brand h1 .b{color:var(--amber)}
+  .brand .tag{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em}
+  main{flex:1;display:flex;flex-direction:column;gap:14px;padding:8px 14px 14px;min-height:0}
+
+  .field{display:flex;flex-direction:column;gap:7px;flex:1;min-height:0}
+  .label{
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);display:flex;justify-content:space-between;align-items:center;
+  }
+  textarea{
+    flex:1;width:100%;resize:none;border-radius:12px;border:1px solid var(--line);
+    background:var(--panel);color:var(--ink);font-family:var(--sans);
+    font-size:16px;line-height:1.5;padding:14px;outline:none;min-height:90px;
+  }
+  textarea:focus{border-color:var(--amber)}
+
+  /* output panel — the signature: a "transmission" readout */
+  .out-wrap{position:relative;flex:1;min-height:120px}
+  #out{
+    height:100%;width:100%;border-radius:12px;
+    border:1px solid var(--teal-dim);
+    background:
+      repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(90,209,197,.025) 3px,rgba(90,209,197,.025) 4px),
+      var(--panel-2);
+    color:var(--ink);font-family:var(--mono);font-size:17px;line-height:1.7;
+    padding:14px;overflow:auto;white-space:pre-wrap;word-break:break-word;
+    box-shadow:inset 0 0 24px rgba(90,209,197,.05);
+  }
+  #out:empty::before{content:"encoded output appears here";color:var(--muted);font-style:italic}
+
+  .levels{display:flex;gap:8px}
+  .lvl{
+    flex:1;font-family:var(--mono);font-size:13px;letter-spacing:.04em;
+    padding:11px 6px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);font-weight:700;cursor:pointer;
+    transition:all .12s;
+  }
+  .lvl small{display:block;font-weight:400;font-size:10px;letter-spacing:.02em;margin-top:2px;opacity:.8}
+  .lvl[aria-pressed="true"]{
+    border-color:var(--amber);color:var(--amber);background:#1b1812;
+    box-shadow:0 0 0 1px var(--amber) inset;
+  }
+
+  .row{display:flex;gap:8px;align-items:stretch}
+  .btn{
+    font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.03em;
+    padding:13px 14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel);color:var(--ink);cursor:pointer;transition:all .12s;
+    display:flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{flex:1;background:var(--teal);color:#06201d;border-color:var(--teal)}
+  .btn.ghost{flex:1}
+  .btn.copied{background:var(--amber);border-color:var(--amber);color:#1a1206}
+
+  .toggle{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;color:var(--muted);cursor:pointer;user-select:none;padding:4px 2px}
+  .sw{width:38px;height:22px;border-radius:11px;background:var(--line);position:relative;transition:background .15s;flex:none}
+  .sw::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:all .15s}
+  .toggle[aria-pressed="true"] .sw{background:var(--teal-dim)}
+  .toggle[aria-pressed="true"] .sw::after{left:18px;background:var(--teal)}
+  .toggle[aria-pressed="true"]{color:var(--ink)}
+
+  .hint{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center;line-height:1.5;padding:2px 4px 6px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1>Glyph<span class="b">break</span></h1>
+    <span class="tag">// human-readable, machine-hostile</span>
+  </div>
+</header>
+
+<main>
+  <div class="field">
+    <div class="label"><span>Plain text</span><span id="incount">0</span></div>
+    <textarea id="in" placeholder="Type your message…" autocapitalize="sentences" autocomplete="off" spellcheck="false"></textarea>
+  </div>
+
+  <div class="levels" role="group" aria-label="Encoding strength">
+    <button class="lvl" data-lvl="1" aria-pressed="false">L1<small>light</small></button>
+    <button class="lvl" data-lvl="2" aria-pressed="false">L2<small>medium</small></button>
+    <button class="lvl" data-lvl="3" aria-pressed="true">L3<small>hardcore</small></button>
+  </div>
+
+  <div class="field">
+    <div class="label">
+      <span>Encoded</span>
+      <button class="toggle" id="live" aria-pressed="true"><span class="sw"></span>live</button>
+    </div>
+    <div class="out-wrap"><div id="out"></div></div>
+  </div>
+
+  <div class="row">
+    <button class="btn ghost" id="vary">↻ Variation</button>
+    <button class="btn ghost" id="encode">Encode</button>
+  </div>
+  <div class="row">
+    <button class="btn primary" id="copy">Copy result</button>
+  </div>
+  <div class="hint">Same letter → many disguises. Hit Variation for a fresh disguise of the same text.</div>
+</main>
+
+<script>
+/* ---------- glyph engine ---------- */
+
+// Math alphabet blocks. The math ranges have reserved "holes" where the glyph
+// already lived in the Letterlike Symbols block — patched here so nothing
+// renders as a missing-character box.
+const MATH = {
+  bold:        { up:0x1D400, lo:0x1D41A, holes:{} },
+  italic:      { up:0x1D434, lo:0x1D44E, holes:{ h:'\u210E' } },
+  script:      { up:0x1D49C, lo:0x1D4B6, holes:{
+                  B:'\u212C',E:'\u2130',F:'\u2131',H:'\u210B',I:'\u2110',
+                  L:'\u2112',M:'\u2133',R:'\u211B', e:'\u212F',g:'\u210A',o:'\u2134' } },
+  boldScript:  { up:0x1D4D0, lo:0x1D4EA, holes:{} },
+  fraktur:     { up:0x1D504, lo:0x1D51E, holes:{
+                  C:'\u212D',H:'\u210C',I:'\u2111',R:'\u211C',Z:'\u2128' } },
+  doubleStruck:{ up:0x1D538, lo:0x1D552, holes:{
+                  C:'\u2102',H:'\u210D',N:'\u2115',P:'\u2119',Q:'\u211A',
+                  R:'\u211D',Z:'\u2124' } },
+  sans:        { up:0x1D5A0, lo:0x1D5BA, holes:{} },
+  sansBold:    { up:0x1D5D4, lo:0x1D5EE, holes:{} },
+  mono:        { up:0x1D670, lo:0x1D68A, holes:{} },
+};
+function mathGlyph(ch, styleKey){
+  const s = MATH[styleKey];
+  if (s.holes[ch]) return s.holes[ch];
+  const up = ch>='A'&&ch<='Z', lo = ch>='a'&&ch<='z';
+  if(!up && !lo) return null;
+  const base = up ? s.up : s.lo;
+  return String.fromCodePoint(base + ch.charCodeAt(0) - (up?65:97));
+}
+
+// Cross-script look-alikes (Cyrillic / Greek / etc.)
+const HOMO = {
+  a:['а','ɑ'], c:['с','ϲ'], e:['е','ё'], g:['ɡ'], h:['һ'], i:['і','ı'],
+  j:['ј'], k:['κ'], n:['ո'], o:['о','ο'], p:['р','ρ'], q:['ԛ'], s:['ѕ'],
+  u:['υ','ս'], v:['ν','ѵ'], w:['ѡ','ԝ'], x:['х','χ'], y:['у','γ'],
+  A:['Α','А'], B:['Β','В'], C:['С','Ϲ'], E:['Ε','Е'], H:['Η','Н'],
+  I:['Ι','І'], K:['Κ','К'], M:['Μ','М'], N:['Ν'], O:['Ο','О'],
+  P:['Ρ','Р'], T:['Τ','Т'], X:['Χ','Х'], Y:['Υ','У'], Z:['Ζ'],
+};
+
+// Leet / symbol swaps. gentle = subset used for L1.
+const LEET = {
+  a:['@','4'], b:['8','ß'], c:['(','¢'], d:['ð'], e:['3','€'], f:['ƒ'],
+  g:['9','6'], h:['#'], i:['1','!'], j:[';'], k:[], l:['1','£'], m:[],
+  n:['ñ'], o:['0','ø'], p:['þ'], q:['9'], r:['®'], s:['5','$','§'],
+  t:['7','+'], u:['µ','ü'], v:[], w:[], x:['×'], y:['¥','ý'], z:['2'],
+};
+const GENTLE = { a:['@','4'], e:['3'], i:['1'], o:['0'], s:['5','$'], t:['7'], l:['1'], b:['8'], g:['9'] };
+
+function circled(ch){
+  if(ch>='A'&&ch<='Z') return String.fromCodePoint(0x24B6+ch.charCodeAt(0)-65);
+  if(ch>='a'&&ch<='z') return String.fromCodePoint(0x24D0+ch.charCodeAt(0)-97);
+  return null;
+}
+function fullwidth(ch){
+  if(ch>='A'&&ch<='Z') return String.fromCodePoint(0xFF21+ch.charCodeAt(0)-65);
+  if(ch>='a'&&ch<='z') return String.fromCodePoint(0xFF41+ch.charCodeAt(0)-97);
+  return null;
+}
+function flip(ch){ // random-case partner, used in L2
+  if(ch>='a'&&ch<='z') return ch.toUpperCase();
+  if(ch>='A'&&ch<='Z') return ch.toLowerCase();
+  return ch;
+}
+
+// Build the candidate pool for one character at a given level.
+function poolFor(ch, level){
+  const low = ch.toLowerCase();
+  const isLetter = (ch>='a'&&ch<='z')||(ch>='A'&&ch<='Z');
+  if(!isLetter) return null;
+
+  if(level===1){
+    const g = GENTLE[low];
+    if(!g) return null;
+    // keep original case feel: gentle leet is symbol-based, case-neutral
+    return [ch, ...g];        // includes the plain letter so output stays light
+  }
+
+  if(level===2){
+    const out = [ch, flip(ch)];
+    (LEET[low]||[]).forEach(x=>out.push(x));
+    const fw = fullwidth(ch); if(fw) out.push(fw);
+    return out;
+  }
+
+  // level 3 — everything
+  const out = [];
+  for(const k in MATH){ const g = mathGlyph(ch,k); if(g) out.push(g); }
+  (HOMO[ch]||[]).forEach(x=>out.push(x));
+  (LEET[low]||[]).forEach(x=>out.push(x));
+  const c = circled(ch); if(c) out.push(c);
+  const fw = fullwidth(ch); if(fw) out.push(fw);
+  out.push(flip(ch));
+  return out.length ? out : null;
+}
+
+// seeded RNG so the visible text stays stable while typing (live mode),
+// and only changes when you ask for a Variation.
+function rngAt(seed, i){
+  let t = (seed ^ (i*0x9E3779B1)) >>> 0;
+  return function(){
+    t |= 0; t = (t + 0x6D2B79F5) | 0;
+    let r = Math.imul(t ^ (t>>>15), 1|t);
+    r = (r + Math.imul(r ^ (r>>>7), 61|r)) ^ r;
+    return ((r ^ (r>>>14)) >>> 0) / 4294967296;
+  };
+}
+function encode(text, level, seed){
+  let out = '';
+  for(let i=0;i<text.length;i++){
+    const ch = text[i];
+    const pool = poolFor(ch, level);
+    if(!pool){ out += ch; continue; }
+    const r = rngAt(seed, i)();
+    out += pool[Math.floor(r*pool.length)];
+  }
+  return out;
+}
+
+/* ---------- wiring ---------- */
+const $in=document.getElementById('in'), $out=document.getElementById('out'),
+      $count=document.getElementById('incount'), $live=document.getElementById('live'),
+      $copy=document.getElementById('copy');
+let level=3, seed=(Math.random()*1e9)|0, liveOn=true;
+
+function render(){
+  $out.textContent = encode($in.value, level, seed);
+  $count.textContent = $in.value.length;
+}
+$in.addEventListener('input', ()=>{ $count.textContent=$in.value.length; if(liveOn) render(); });
+
+document.querySelectorAll('.lvl').forEach(b=>b.addEventListener('click',()=>{
+  level = +b.dataset.lvl;
+  document.querySelectorAll('.lvl').forEach(x=>x.setAttribute('aria-pressed', x===b));
+  render();
+}));
+
+$live.addEventListener('click',()=>{
+  liveOn = !liveOn;
+  $live.setAttribute('aria-pressed', liveOn);
+  if(liveOn) render();
+});
+
+document.getElementById('vary').addEventListener('click',()=>{ seed=(Math.random()*1e9)|0; render(); });
+document.getElementById('encode').addEventListener('click', render);
+
+$copy.addEventListener('click', async ()=>{
+  const txt = $out.textContent;
+  let ok=false;
+  try{ await navigator.clipboard.writeText(txt); ok=true; }
+  catch(e){
+    // fallback for non-secure contexts (e.g. opened as a local file://)
+    const ta=document.createElement('textarea');
+    ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ ok=document.execCommand('copy'); }catch(_){}
+    document.body.removeChild(ta);
+  }
+  const orig=$copy.textContent;
+  $copy.textContent = ok ? 'Copied ✓' : 'Press & hold to copy';
+  $copy.classList.toggle('copied', ok);
+  setTimeout(()=>{ $copy.textContent=orig; $copy.classList.remove('copied'); }, 1400);
+});
+
+render();
+</script>
+</body>
+</html>
