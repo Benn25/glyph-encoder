@@ -32,30 +32,37 @@
   .label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
     color:var(--muted);display:flex;justify-content:space-between;align-items:center}
   .label .hintword{text-transform:none;letter-spacing:0;color:var(--amber);font-size:10px}
-  textarea{flex:1;width:100%;resize:none;border-radius:12px;border:1px solid var(--line);
+  textarea{width:100%;resize:none;border-radius:12px;border:1px solid var(--line);
     background:var(--panel);color:var(--ink);font-family:var(--sans);
-    font-size:16px;line-height:1.5;padding:12px;outline:none;min-height:54px}
+    font-size:16px;line-height:1.5;padding:12px;outline:none}
+  #in{flex:1;min-height:52px}
   textarea:focus{border-color:var(--amber)}
 
-  .out-wrap{position:relative;flex:1;min-height:90px}
+  .out-wrap{position:relative;flex:1;min-height:88px}
   #out{height:100%;width:100%;border-radius:12px;border:1px solid var(--teal-dim);
     background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(90,209,197,.025) 3px,rgba(90,209,197,.025) 4px),var(--panel-2);
-    color:var(--ink);font-family:var(--mono);font-size:17px;line-height:1.85;
+    color:var(--ink);font-family:var(--mono);font-size:18px;line-height:1.85;
     padding:12px;overflow:auto;white-space:pre-wrap;word-break:break-word;-webkit-user-select:none;user-select:none}
   #out:empty::before{content:"type above, then tap words here to disguise them";color:var(--muted);font-style:italic}
   .w{cursor:pointer;border-radius:4px;padding:1px 1px;transition:background .1s}
-  .w:active{background:rgba(242,166,90,.18)}
-  .w.on{color:var(--amber);background:rgba(242,166,90,.12);box-shadow:inset 0 -2px 0 var(--amber)}
+  .w:active{background:rgba(255,255,255,.08)}
+  .w.scramble{color:var(--amber);background:rgba(242,166,90,.12);box-shadow:inset 0 -2px 0 var(--amber)}
+  .w.rebus{color:var(--teal);background:rgba(90,209,197,.12);box-shadow:inset 0 -2px 0 var(--teal)}
 
-  .srow{display:flex;gap:7px;align-items:stretch}
+  .modebar{display:flex;gap:7px}
+  .mbtn{flex:1;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.03em;
+    padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer;transition:all .12s}
+  .mbtn.on[data-mode="scramble"]{border-color:var(--amber);color:var(--amber);background:#1b1812;box-shadow:0 0 0 1px var(--amber) inset}
+  .mbtn.on[data-mode="rebus"]{border-color:var(--teal);color:var(--teal);background:#0e1c1a;box-shadow:0 0 0 1px var(--teal) inset}
+
+  .srow{display:flex;gap:7px;align-items:stretch;margin-top:2px}
   .slider{flex:1;position:relative;height:44px;border-radius:10px;border:1px solid var(--line);
     background:var(--panel);overflow:hidden;cursor:ew-resize;touch-action:none;user-select:none}
   .slider:focus{outline:none;border-color:var(--ink)}
   .fill{position:absolute;left:0;top:0;bottom:0;width:50%;background:var(--amber-dim)}
   .slider.teal .fill{background:var(--teal-dim)}
   .slabel{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;
-    padding:0 13px;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.02em;
-    color:var(--ink);pointer-events:none}
+    padding:0 13px;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--ink);pointer-events:none}
   .slabel .sval{color:var(--muted);font-weight:400}
   .dice{width:44px;flex:none;border-radius:10px;border:1px solid var(--line);background:var(--panel);
     color:var(--muted);font-size:17px;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center}
@@ -66,7 +73,22 @@
     cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;gap:7px;width:100%}
   .btn:active{transform:translateY(1px)}
   .btn.copied{background:var(--amber);border-color:var(--amber);color:#1a1206}
+  .btn2{font-family:var(--mono);font-size:13px;font-weight:700;padding:13px;border-radius:10px;
+    border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;width:100%;margin-top:2px}
+  .btn2:active{transform:translateY(1px)}
   .hint{font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;line-height:1.5;padding:1px 4px}
+
+  .editor{position:fixed;inset:0;z-index:50;background:var(--bg);display:none;flex-direction:column;gap:9px;
+    padding:calc(14px + env(safe-area-inset-top)) 14px calc(14px + env(safe-area-inset-bottom))}
+  .editor.open{display:flex}
+  .ehead{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--ink);display:flex;flex-direction:column;gap:3px}
+  .ehead small{font-weight:400;color:var(--muted);font-size:11px}
+  #elist{flex:1;min-height:0;font-family:var(--mono);font-size:14px;line-height:1.5}
+  .erow{display:flex;gap:7px}
+  .dice2{flex:1;font-family:var(--mono);font-size:12px;font-weight:700;padding:12px;border-radius:10px;
+    border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+  .dice2:active{transform:translateY(1px)}
+  .enote{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5}
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -81,149 +103,271 @@
     <textarea id="in" placeholder="Type your message…" autocapitalize="sentences" autocomplete="off" spellcheck="false"></textarea>
   </div>
   <div class="field">
-    <div class="label"><span>Result</span><span class="hintword">tap a word to disguise / restore</span></div>
+    <div class="label"><span>Result</span><span class="hintword">tap a word to disguise it</span></div>
     <div class="out-wrap"><div id="out"></div></div>
   </div>
 
-  <div class="srow">
-    <div class="slider" id="sl-str" role="slider" aria-label="Scramble" aria-valuemin="0" aria-valuemax="100" tabindex="0">
-      <div class="fill"></div><div class="slabel"><span>Scramble</span><span class="sval">65%</span></div>
-    </div>
-    <button class="dice" id="rnd-str" aria-label="Randomize scramble">⟳</button>
+  <div class="modebar">
+    <button class="mbtn" data-mode="scramble">Scramble</button>
+    <button class="mbtn on" data-mode="rebus">Rebus 🐀</button>
   </div>
-  <div class="srow">
-    <div class="slider teal" id="sl-pun" role="slider" aria-label="Punctuation" aria-valuemin="0" aria-valuemax="100" tabindex="0">
-      <div class="fill"></div><div class="slabel"><span>Punctuation</span><span class="sval">25%</span></div>
+
+  <div id="panel-scramble" style="display:none">
+    <div class="srow">
+      <div class="slider" id="sl-str" role="slider" tabindex="0"><div class="fill"></div><div class="slabel"><span>Scramble</span><span class="sval">65%</span></div></div>
+      <button class="dice" id="rnd-str">⟳</button>
     </div>
-    <button class="dice" id="rnd-pun" aria-label="Randomize punctuation">⟳</button>
+    <div class="srow">
+      <div class="slider teal" id="sl-pun" role="slider" tabindex="0"><div class="fill"></div><div class="slabel"><span>Punctuation</span><span class="sval">25%</span></div></div>
+      <button class="dice" id="rnd-pun">⟳</button>
+    </div>
+    <div class="srow">
+      <div class="slider teal" id="sl-spl" role="slider" tabindex="0"><div class="fill"></div><div class="slabel"><span>Invisible splits</span><span class="sval">50%</span></div></div>
+      <button class="dice" id="rnd-spl">⟳</button>
+    </div>
   </div>
-  <div class="srow">
-    <div class="slider teal" id="sl-spl" role="slider" aria-label="Invisible splits" aria-valuemin="0" aria-valuemax="100" tabindex="0">
-      <div class="fill"></div><div class="slabel"><span>Invisible splits</span><span class="sval">50%</span></div>
-    </div>
-    <button class="dice" id="rnd-spl" aria-label="Randomize invisible splits">⟳</button>
+
+  <div id="panel-rebus">
+    <button class="btn2" id="editlist">✎ Edit rebus list (<span id="cnt">0</span> entries)</button>
   </div>
 
   <button class="btn" id="copy">Copy result</button>
-  <div class="hint">Disguise only the meaning-bearing words; leave the rest clean so it reads naturally and doesn't look tampered.</div>
+  <div class="hint">Tap = disguise with the current mode. Words keep their mode when you switch. Tap again to undo.</div>
 </main>
 
-<script>
-/* ---------- engine ---------- */
-const ZW=['\u200B','\u200C','\u200D'];
-const SEPSET=['\u00B7','\u2027','\u30FB','-'];   // · ‧ ・ -
+<div class="editor" id="editor">
+  <div class="ehead">Rebus list<small>One per line: <b>sound = emoji</b>. Lines starting with # are comments.</small></div>
+  <textarea id="elist" spellcheck="false"></textarea>
+  <button class="btn" id="apply">Apply &amp; save</button>
+  <div class="erow">
+    <button class="dice2" id="copylist">Copy list</button>
+    <button class="dice2" id="reset">Defaults</button>
+    <button class="dice2" id="closeed">Close</button>
+  </div>
+  <div class="enote">Saved in this browser. Copy the list to back it up or move it to another device. To make it the permanent default, paste it into index.html on GitHub.</div>
+</div>
 
+<script>
+/* ---------- default rébus list (French content) ---------- */
+const DEFAULT_LIST = `# Chiffres
+un = 1
+deux = 2
+trois = 3
+quatre = 4
+cinq = 5
+six = 6
+sept = 7
+huit = 8
+neuf = 9
+dix = 10
+cent = 💯
+ci = 6
+
+# Sons courts (se glissent dans les mots) — les clés très courtes (ra, si, té) se déclenchent souvent
+ra = 🐀
+rat = 🐀
+ter = 🫖
+thé = 🫖
+té = 🫖
+eau = 💧
+mer = 🌊
+mère = 🌊
+maire = 🌊
+feu = 🔥
+pain = 🍞
+pin = 🍞
+peint = 🍞
+chat = 🐱
+cha = 🐱
+nez = 👃
+né = 👃
+ver = 🐛
+vert = 🐛
+verre = 🐛
+or = 🥇
+roi = 🤴
+dent = 🦷
+dans = 🦷
+dan = 🦷
+mont = ⛰️
+mon = ⛰️
+pont = 🌉
+pon = 🌉
+loup = 🐺
+lou = 🐺
+clé = 🔑
+clef = 🔑
+lait = 🥛
+lai = 🥛
+main = ✋
+scie = 🪚
+si = 🪚
+loi = ⚖️
+vin = 🍷
+vingt = 🍷
+vain = 🍷
+cœur = ❤️
+œuf = 🥚
+chou = 🥬
+riz = 🍚
+ours = 🐻
+
+# Mots entiers (rigolos)
+rose = 🌹
+poire = 🍐
+pomme = 🍎
+citron = 🍋
+banane = 🍌
+raisin = 🍇
+gâteau = 🎂
+café = ☕
+chien = 🐶
+souris = 🐭
+renard = 🦊
+lion = 🦁
+serpent = 🐍
+abeille = 🐝
+poisson = 🐟
+maison = 🏠
+voiture = 🚗
+bateau = ⛵
+avion = ✈️
+lune = 🌙
+soleil = ☀️
+étoile = ⭐
+couronne = 👑
+diamant = 💎
+fusée = 🚀
+fantôme = 👻`;
+
+const LS_KEY='glyphbreak_rebus_v1';
+function loadList(){ try{const s=localStorage.getItem(LS_KEY); if(s)return s;}catch(e){} return DEFAULT_LIST; }
+function saveList(t){ try{localStorage.setItem(LS_KEY,t);}catch(e){} }
+
+let rebusMap={}, rebusKeys=[];
+function parseList(text){
+  const map={};
+  text.split(/\r?\n/).forEach(line=>{
+    const t=line.trim(); if(!t||t[0]==='#') return;
+    const i=t.indexOf('='); if(i<0) return;
+    const k=t.slice(0,i).trim().toLowerCase(), v=t.slice(i+1).trim();
+    if(k&&v) map[k]=v;
+  }); return map;
+}
+function setList(text){
+  rebusMap=parseList(text);
+  rebusKeys=Object.keys(rebusMap).sort((a,b)=>b.length-a.length);
+  const c=document.getElementById('cnt'); if(c) c.textContent=rebusKeys.length;
+}
+function rebus(word){
+  const low=word.toLowerCase(); let out='', i=0;
+  while(i<word.length){
+    let m=null; for(const k of rebusKeys){ if(low.startsWith(k,i)){ m=k; break; } }
+    if(m){ out+=rebusMap[m]; i+=m.length; } else { out+=word[i]; i++; }
+  } return out;
+}
+
+/* ---------- scramble engine ---------- */
+const ZW=['\u200B','\u200C','\u200D'];
+const SEPSET=['\u00B7','\u2027','\u30FB','-'];
 function rngAt(seed,i){let t=(seed^(i*0x9E3779B1))>>>0;
   return function(){t|=0;t=(t+0x6D2B79F5)|0;let r=Math.imul(t^(t>>>15),1|t);
     r=(r+Math.imul(r^(r>>>7),61|r))^r;return((r^(r>>>14))>>>0)/4294967296;};}
-function anchors(len){
-  const up=len<=6?0:Math.floor((len-7)/2)+1;
+function anchors(len){const up=len<=6?0:Math.floor((len-7)/2)+1;
   let front=1+Math.ceil(up/2),back=1+Math.floor(up/2);
-  while(len-front-back<2&&(front>1||back>1)){if(front>back)front--;else back--;}
-  return {front,back};
-}
+  while(len-front-back<2&&(front>1||back>1)){if(front>back)front--;else back--;}return {front,back};}
 function scrambleWord(word,seed,maxDist,intensity){
-  const n=word.length;if(n<4)return word;
-  const {front,back}=anchors(n);const midLen=n-front-back;if(midLen<2)return word;
+  const n=word.length;if(n<4)return word;const {front,back}=anchors(n);const midLen=n-front-back;if(midLen<2)return word;
   const mid=word.slice(front,n-back).split('');const home=mid.map((_,i)=>i);const r=rngAt(seed,3);
-  for(let pass=0;pass<3;pass++){
-    for(let i=0;i<midLen-1;i++){
-      const d=1+Math.floor(r()*maxDist),j=i+d;if(j>=midLen)continue;
-      if(r()<intensity&&Math.abs(home[i]-j)<=maxDist&&Math.abs(home[j]-i)<=maxDist){
-        [mid[i],mid[j]]=[mid[j],mid[i]];[home[i],home[j]]=[home[j],home[i]];}
-    }
-  }
+  for(let pass=0;pass<3;pass++)for(let i=0;i<midLen-1;i++){const d=1+Math.floor(r()*maxDist),j=i+d;if(j>=midLen)continue;
+    if(r()<intensity&&Math.abs(home[i]-j)<=maxDist&&Math.abs(home[j]-i)<=maxDist){[mid[i],mid[j]]=[mid[j],mid[i]];[home[i],home[j]]=[home[j],home[i]];}}
   let res=word.slice(0,front)+mid.join('')+word.slice(n-back);
-  if(res===word){[mid[0],mid[1]]=[mid[1],mid[0]];res=word.slice(0,front)+mid.join('')+word.slice(n-back);}
-  return res;
-}
-function doubleOne(word,seed){const r=rngAt(seed,2);const p=Math.floor(r()*word.length);
-  return word.slice(0,p+1)+word[p]+word.slice(p+1);}
+  if(res===word){[mid[0],mid[1]]=[mid[1],mid[0]];res=word.slice(0,front)+mid.join('')+word.slice(n-back);}return res;}
+function doubleOne(word,seed){const r=rngAt(seed,2);const p=Math.floor(r()*word.length);return word.slice(0,p+1)+word[p]+word.slice(p+1);}
+function encodeWord(word,wi,t,punct,splits,sStr,sPun,sSpl){
+  const maxDist=(t<0.5?1:2),intensity=0.7*t,dblP=0.06*t,punctProb=0.6*punct;
+  let w=word;const wr=rngAt(sStr^0x55,wi);
+  if(t>0&&w.length>=4) w=scrambleWord(w,sStr^wi,maxDist,intensity);
+  if(dblP>0&&wr()<dblP) w=doubleOne(w,sStr^(wi+7));
+  let res='';
+  for(let c=0;c<w.length;c++){res+=w[c];
+    if(c<w.length-1){
+      if(punctProb>0){const rp=rngAt(sPun,wi*131+c);if(rp()<punctProb)res+=SEPSET[Math.floor(rp()*SEPSET.length)];}
+      if(splits>0){const rz=rngAt(sSpl,wi*131+c);let nz=0;if(rz()<splits)nz++;if(rz()<splits)nz++;for(let q=0;q<nz;q++)res+=ZW[Math.floor(rz()*ZW.length)];}
+    }}
+  return res;}
+
+/* ---------- shared ---------- */
 function isAZ(ch){return!!ch&&/^\p{L}$/u.test(ch);}
 function tokenize(text){const toks=[];let i=0;
   while(i<text.length){
     if(isAZ(text[i])){let j=i;while(j<text.length&&isAZ(text[j]))j++;toks.push({word:true,s:text.slice(i,j)});i=j;}
-    else{toks.push({word:false,s:text[i]});i++;}
-  }return toks;}
-
-// disguise a single chosen word using the current slider settings
-function encodeWord(word,wi,t,punct,splits,sStr,sPun,sSpl){
-  const maxDist=(t<0.5?1:2), intensity=0.7*t, dblP=0.06*t, punctProb=0.6*punct;
-  let w=word; const wr=rngAt(sStr^0x55,wi);
-  if(t>0 && w.length>=4) w=scrambleWord(w,sStr^wi,maxDist,intensity);
-  if(dblP>0 && wr()<dblP) w=doubleOne(w,sStr^(wi+7));
-  let res='';
-  for(let c=0;c<w.length;c++){
-    res+=w[c];
-    if(c<w.length-1){
-      if(punctProb>0){const rp=rngAt(sPun,wi*131+c); if(rp()<punctProb) res+=SEPSET[Math.floor(rp()*SEPSET.length)];}
-      if(splits>0){const rz=rngAt(sSpl,wi*131+c);let nz=0;
-        if(rz()<splits)nz++; if(rz()<splits)nz++;
-        for(let q=0;q<nz;q++) res+=ZW[Math.floor(rz()*ZW.length)];}
-    }
-  }
-  return res;
-}
+    else{toks.push({word:false,s:text[i]});i++;}}return toks;}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 /* ---------- sliders ---------- */
-function makeSlider(id, initial, onChange){
-  const el=document.getElementById(id);
-  const fill=el.querySelector('.fill'), valEl=el.querySelector('.sval');
-  let val=initial, dragging=false;
-  function set(v,silent){val=Math.max(0,Math.min(1,v));
-    fill.style.width=(val*100)+'%'; valEl.textContent=Math.round(val*100)+'%';
-    el.setAttribute('aria-valuenow',Math.round(val*100)); if(!silent) onChange(val);}
-  function fromX(x){const r=el.getBoundingClientRect(); set((x-r.left)/r.width);}
+function makeSlider(id,initial,onChange){
+  const el=document.getElementById(id);const fill=el.querySelector('.fill'),valEl=el.querySelector('.sval');
+  let val=initial;
+  function set(v,silent){val=Math.max(0,Math.min(1,v));fill.style.width=(val*100)+'%';valEl.textContent=Math.round(val*100)+'%';if(!silent)onChange(val);}
+  function fromX(x){const r=el.getBoundingClientRect();set((x-r.left)/r.width);}
+  let dragging=false;
   el.addEventListener('pointerdown',e=>{dragging=true;el.setPointerCapture(e.pointerId);fromX(e.clientX);e.preventDefault();});
   el.addEventListener('pointermove',e=>{if(dragging)fromX(e.clientX);});
-  el.addEventListener('pointerup',()=>{dragging=false;});
-  el.addEventListener('pointercancel',()=>{dragging=false;});
-  el.addEventListener('keydown',e=>{
-    if(e.key==='ArrowRight'||e.key==='ArrowUp'){set(val+0.02);e.preventDefault();}
-    if(e.key==='ArrowLeft'||e.key==='ArrowDown'){set(val-0.02);e.preventDefault();}});
-  set(initial,true);
-  return {get:()=>val};
+  el.addEventListener('pointerup',()=>{dragging=false;});el.addEventListener('pointercancel',()=>{dragging=false;});
+  el.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowUp'){set(val+0.02);e.preventDefault();}if(e.key==='ArrowLeft'||e.key==='ArrowDown'){set(val-0.02);e.preventDefault();}});
+  set(initial,true);return {get:()=>val};
 }
 
 /* ---------- wiring ---------- */
 const $in=document.getElementById('in'),$out=document.getElementById('out'),
   $count=document.getElementById('incount'),$copy=document.getElementById('copy');
 const rnd=()=>(Math.random()*1e9)|0;
-let seedStr=rnd(), seedPunct=rnd(), seedSpl=rnd();
-const selected=new Set();           // which word-indices are disguised
+let seedStr=rnd(),seedPunct=rnd(),seedSpl=rnd(),mode='rebus';
+const selected=new Map();   // wordIndex -> 'scramble' | 'rebus'
 
+function disguise(word,wi,m){
+  if(m==='rebus') return rebus(word);
+  return encodeWord(word,wi,str.get(),pun.get(),spl.get(),seedStr|0,seedPunct|0,seedSpl|0);
+}
 function build(){
-  const toks=tokenize($in.value);
-  const t=str.get(), punct=pun.get(), splits=spl.get();
-  let html='', plain='', wi=-1;
+  const toks=tokenize($in.value);let html='',plain='',wi=-1;
   for(const tok of toks){
-    if(tok.word){
-      wi++;
-      const sel=selected.has(wi);
-      const enc=sel?encodeWord(tok.s,wi,t,punct,splits,seedStr|0,seedPunct|0,seedSpl|0):tok.s;
+    if(tok.word){wi++;
+      const m=selected.get(wi);
+      const enc=m?disguise(tok.s,wi,m):tok.s;
       plain+=enc;
-      html+='<span class="w'+(sel?' on':'')+'" data-wi="'+wi+'">'+esc(enc)+'</span>';
-    }else{ plain+=tok.s; html+=esc(tok.s); }
+      html+='<span class="w'+(m?(' '+m):'')+'" data-wi="'+wi+'">'+esc(enc)+'</span>';
+    }else{plain+=tok.s;html+=esc(tok.s);}
   }
   return {html,plain};
 }
-function render(){ $out.innerHTML=build().html; $count.textContent=$in.value.length; }
+function render(){$out.innerHTML=build().html;$count.textContent=$in.value.length;}
 
-const str=makeSlider('sl-str',0.65,render);
-const pun=makeSlider('sl-pun',0.25,render);
-const spl=makeSlider('sl-spl',0.50,render);
+const str=makeSlider('sl-str',0.65,render),pun=makeSlider('sl-pun',0.25,render),spl=makeSlider('sl-spl',0.50,render);
 
-$out.addEventListener('click',e=>{
-  const el=e.target.closest('.w'); if(!el)return;
-  const wi=+el.dataset.wi;
-  if(selected.has(wi)) selected.delete(wi); else selected.add(wi);
-  render();
-});
+$out.addEventListener('click',e=>{const el=e.target.closest('.w');if(!el)return;const wi=+el.dataset.wi;
+  if(selected.has(wi))selected.delete(wi);else selected.set(wi,mode);render();});
+document.querySelectorAll('.mbtn').forEach(b=>b.addEventListener('click',()=>{
+  mode=b.dataset.mode;document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('on',x===b));
+  document.getElementById('panel-scramble').style.display=(mode==='scramble')?'block':'none';
+  document.getElementById('panel-rebus').style.display=(mode==='rebus')?'block':'none';
+}));
 document.getElementById('rnd-str').addEventListener('click',()=>{seedStr=rnd();render();});
 document.getElementById('rnd-pun').addEventListener('click',()=>{seedPunct=rnd();render();});
 document.getElementById('rnd-spl').addEventListener('click',()=>{seedSpl=rnd();render();});
 $in.addEventListener('input',render);
+
+/* ---------- list editor ---------- */
+const $editor=document.getElementById('editor'),$elist=document.getElementById('elist');
+document.getElementById('editlist').addEventListener('click',()=>{$elist.value=loadList();$editor.classList.add('open');});
+document.getElementById('closeed').addEventListener('click',()=>$editor.classList.remove('open'));
+document.getElementById('reset').addEventListener('click',()=>{$elist.value=DEFAULT_LIST;});
+document.getElementById('apply').addEventListener('click',()=>{const txt=$elist.value;saveList(txt);setList(txt);$editor.classList.remove('open');render();});
+document.getElementById('copylist').addEventListener('click',async()=>{
+  const b=document.getElementById('copylist');try{await navigator.clipboard.writeText($elist.value);}
+  catch(e){$elist.select();try{document.execCommand('copy');}catch(_){}}
+  const o=b.textContent;b.textContent='Copied ✓';setTimeout(()=>b.textContent=o,1200);});
 
 $copy.addEventListener('click',async()=>{const txt=build().plain;let ok=false;
   try{await navigator.clipboard.writeText(txt);ok=true;}
@@ -232,6 +376,7 @@ $copy.addEventListener('click',async()=>{const txt=build().plain;let ok=false;
   const orig=$copy.textContent;$copy.textContent=ok?'Copied ✓':'Press & hold to copy';
   $copy.classList.toggle('copied',ok);setTimeout(()=>{$copy.textContent=orig;$copy.classList.remove('copied');},1400);});
 
+setList(loadList());
 render();
 </script>
 </body>
